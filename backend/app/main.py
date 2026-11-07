@@ -1,0 +1,26 @@
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+from app.routers import chat
+
+app = FastAPI(
+    title="Chatbot API - Groq & FastAPI",
+    version="1.0.0",
+    description="Backend de alta performance para chatbot com IA integrada."
+)
+
+# Configuração de CORS (Permite que o React em localhost:5173 consuma esta API)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"], # Em produção, especificar domínios permitidos
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+# Registra as rotas da aplicação
+app.include_router(chat.router)
+
+@app.get("/")
+def health_check():
+    """Rota raiz para verificar se o servidor está online."""
+    return {"status": "online", "message": "Backend FastAPI com Groq a funcionar perfeitamente!"}
