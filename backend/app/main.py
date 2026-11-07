@@ -1,6 +1,8 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.routers import chat
+from .database import engine
+from . import models
 
 app = FastAPI(
     title="Chatbot API - Groq & FastAPI",
@@ -21,6 +23,9 @@ app.add_middleware(
 app.include_router(chat.router)
 
 @app.get("/")
-def health_check():
+def read_root():
     """Rota raiz para verificar se o servidor está online."""
-    return {"status": "online", "message": "Backend FastAPI com Groq a funcionar perfeitamente!"}
+    return {"status": "online", "message": "API de atendimento WhatsApp a operar com SQLite!"}
+
+# Cria as tabelas no SQLite se elas ainda não existirem
+models.Base.metadata.create_all(bind=engine)
